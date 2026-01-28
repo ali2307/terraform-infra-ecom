@@ -47,13 +47,13 @@ name: Terraform CI
 on:
   push:
     branches:
+      - main
       - dev
-      - qa
       - preprod
   pull_request:
     branches:
+      - main
       - dev
-      - qa
       - preprod
 
 env:
