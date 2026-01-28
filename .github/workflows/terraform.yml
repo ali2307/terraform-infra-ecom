@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Environment to apply (dev / qa / preprod)"
+        description: "Environment to apply (main / dev / feature)"
         required: true
         default: "main"
 
@@ -36,6 +36,14 @@ jobs:
       - name: Terraform Init
         working-directory: envs/${{ env.ENV }}
         run: terraform init
+
+      - name: Terraform Plan
+        working-directory: envs/${{ env.ENV }}
+        run: terraform plan
+
+      - name: Terraform Validate
+        working-directory: envs/${{ env.ENV }}
+        run: terraform validate
 
       - name: Terraform Apply
         working-directory: envs/${{ env.ENV }}
