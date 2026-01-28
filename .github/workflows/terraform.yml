@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Environment to apply (main / dev / feature)"
+        description: "Environment to apply (dev only)"
         required: true
-        default: "main"
+        default: "dev"
 
 env:
   AWS_REGION: me-central-1
@@ -22,6 +22,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -31,19 +33,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Select Environment
-        run: echo "ENV=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+        run: echo "ENV=dev" >> $GITHUB_ENV
 
       - name: Terraform Init
         working-directory: envs/${{ env.ENV }}
         run: terraform init
 
-      - name: Terraform Plan
-        working-directory: envs/${{ env.ENV }}
-        run: terraform plan
-
       - name: Terraform Validate
         working-directory: envs/${{ env.ENV }}
         run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: envs/${{ env.ENV }}
+        run: terraform plan
 
       - name: Terraform Apply
         working-directory: envs/${{ env.ENV }}
